@@ -6,27 +6,25 @@ using Assets.Scripts;
 namespace Shader_Fixes
 {
     // Fixes to SSAO
-    [HarmonyPatch(typeof(Assets.Scripts.CameraController), "SetAmbientOcclusion")]
-    public class SetAmbientOcclusion_patched
+    [HarmonyPatch(typeof(CameraController), "SetAmbientOcclusion", new Type[] { })]
+    public class SSAOPatcher
     {
 
-        static bool Prefix(CameraController __instance)
+        static void Prefix()
         {
             var SSAOPatch = CameraController.Instance.AmbientOcclusionEffect;
+            BeefShaders.BeefShaders.AppendLog("Applying SSAO Settings");
 
-            SSAOPatch.Bias = 0.1f;
+            SSAOPatch.Bias = 0.2f;
             SSAOPatch.Blur = SSAOPro.BlurMode.Gaussian;
             SSAOPatch.BlurDownsampling = true;
-            SSAOPatch.BlurPasses = 3;
+            SSAOPatch.BlurPasses = 2;
             SSAOPatch.CutoffDistance = 150.0f;
             SSAOPatch.CutoffFalloff = 50.0f;
             SSAOPatch.Distance = 2.18f;
             SSAOPatch.Downsampling = 2;
-            SSAOPatch.Intensity = 4.5f;
+            SSAOPatch.Intensity = 12.5f;
             SSAOPatch.LumContribution = 0.35f;
-
-            CameraController.Instance.AmbientOcclusionEffect = SSAOPatch;
-            return true;
         }
 
     }
