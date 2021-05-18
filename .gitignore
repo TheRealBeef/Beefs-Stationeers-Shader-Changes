@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Shader Fixes/libs/UnityEngine.dll
+/Shader Fixes/libs/UnityEngine.CoreModule.dll
+/Shader Fixes/libs/BepInEx.Harmony.dll
+/Shader Fixes/libs/BepInEx.dll
+/Shader Fixes/libs/Assembly-CSharp.dll
+/Shader Fixes/libs/Assembly-CSharp-firstpass.dll
+/Shader Fixes/libs/0Harmony.dll
