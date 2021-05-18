@@ -18,13 +18,14 @@ namespace Shader_Fixes
             SSAOPatch.Bias = 0.2f;
             SSAOPatch.Blur = SSAOPro.BlurMode.Gaussian;
             SSAOPatch.BlurDownsampling = true;
+            SSAOPatch.Radius = 0.03f;
             SSAOPatch.BlurPasses = 2;
-            SSAOPatch.CutoffDistance = 150.0f;
-            SSAOPatch.CutoffFalloff = 50.0f;
+            SSAOPatch.CutoffDistance = 100.0f;
+            SSAOPatch.CutoffFalloff = 10.0f;
             SSAOPatch.Distance = 2.18f;
             SSAOPatch.Downsampling = 2;
-            SSAOPatch.Intensity = 12.5f;
-            SSAOPatch.LumContribution = 0.35f;
+            SSAOPatch.Intensity = 4.5f;
+            SSAOPatch.LumContribution = 0.60f;
         }
 
     }
