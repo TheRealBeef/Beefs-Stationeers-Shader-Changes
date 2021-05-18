@@ -1,14 +1,14 @@
 ﻿using System;
 using HarmonyLib;
 using UnityEngine;
+using Assets.Scripts;
 
 namespace Shader_Fixes
 {
     // Fixes to SSAO
-    [HarmonyPatch(typeof(Assets.Scripts.CameraController), "SSAOPatch")]
-    public class SSAOPatcher
+    [HarmonyPatch(typeof(Assets.Scripts.CameraController), "SetAmbientOcclusion")]
+    public class SetAmbientOcclusion_patched
     {
-
 
         static AccessTools.FieldRef<Assets.Scripts.CameraController, bool> isRunningRef = AccessTools.FieldRefAccess<Assets.Scripts.CameraController, bool>("isRunning");
         static bool Prefix(Assets.Scripts.CameraController __instance)
