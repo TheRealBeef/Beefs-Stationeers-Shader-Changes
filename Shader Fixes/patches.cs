@@ -20,22 +20,22 @@ namespace Shader_Fixes
         {
             Texture2D noise_tex = new Texture2D(size, size, TextureFormat.Alpha8, false, true);
             noise_tex.filterMode = FilterMode.Point;
-            int x = 0;  float u = 0.0f;
-            int y = 0;  float v = 0.0f;
+            float u = 0.0f;
+            float v = 0.0f;
             float pix_size = 2.0f;
             float f = 0.0f;
             float result = 0.0f;
 
-            for (;y<size;y++)
+            for (int x = 0;x < size; x++)
             {
-                v = Mathf.Floor(y / pix_size);
-                for (;x<size;x++)
+                u = Mathf.Floor(x / pix_size);
+                for (int y = 0; y <size; y++)
                 {
-                    u = Mathf.Floor(x / pix_size);
+                    v = Mathf.Floor(y / pix_size);
                     f = 0.06711056f * u + 0.00583715f * v;
                     result = fractional(52.9829189f * fractional(f));
                     noise_tex.SetPixel(x,y,new Color (result, result, result, result)); // Only W channel matters here
-                    BeefShaders.BeefShaders.AppendLog("Generating, curently on row " + y.ToString() +" and column " + x.ToString());
+                    // BeefShaders.BeefShaders.AppendLog("Generating, curently on row " + y.ToString() +" and column " + x.ToString());
                 }
             }
             noise_tex.Apply();
@@ -49,22 +49,22 @@ namespace Shader_Fixes
             var SSAOPatch = CameraController.Instance.AmbientOcclusionEffect;
             BeefShaders.BeefShaders.AppendLog("Applying SSAO Settings");
 
-            SSAOPatch.Bias = 0.1f;
+            SSAOPatch.Bias = 0.35f;
             SSAOPatch.Blur = SSAOPro.BlurMode.Gaussian;
             SSAOPatch.BlurDownsampling = true;
-            SSAOPatch.Radius = 0.03f;
+            SSAOPatch.Radius = 0.015f;
             SSAOPatch.BlurPasses = 2;
-            SSAOPatch.CutoffDistance = 100.0f;
-            SSAOPatch.CutoffFalloff = 10.0f;
+            SSAOPatch.CutoffDistance = 150.0f;
+            SSAOPatch.CutoffFalloff = 20.0f;
             SSAOPatch.Distance = 3.0f;
             SSAOPatch.Downsampling = 2;
-            SSAOPatch.Intensity = 5.0f;
-            SSAOPatch.LumContribution = 0.40f;
+            SSAOPatch.Intensity = 8.0f;
+            SSAOPatch.LumContribution = 0.20f;
             
             //// GUH ////
             if (!tex_generated)
             {
-                int size = 512;
+                int size = 256;
                 BeefShaders.BeefShaders.AppendLog("Generating Noise Texture...");
                 SSAOPatch.NoiseTexture = beefs_CPU_destroyer_aka_generate_noise(size);
                 BeefShaders.BeefShaders.AppendLog("Applied Noise Texture");
