@@ -33,4 +33,5 @@ However, it could interfere with other plugin based mods that alter visuals
 
 ## Contributions ##
 
-    Please, feel free to contribute either in issues or in pull requests, or to fork this repo for your own take on Stationeers visuals.
+    Please, feel free to contribute either in issues or in pull requests, or to fork 
+    this repo for your own take on Stationeers visuals.
