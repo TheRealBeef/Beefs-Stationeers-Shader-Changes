@@ -18,7 +18,7 @@ namespace Shader_Fixes
         }
         public static Texture2D beefs_CPU_destroyer_aka_generate_noise(int size)
         {
-            Texture2D noise_tex = new Texture2D(size, size, TextureFormat.RGBA32, false, true);
+            Texture2D noise_tex = new Texture2D(size, size, TextureFormat.Alpha8, false, true);
             noise_tex.filterMode = FilterMode.Point;
             int x = 0;  float u = 0.0f;
             int y = 0;  float v = 0.0f;
@@ -34,7 +34,8 @@ namespace Shader_Fixes
                     u = Mathf.Floor(x / pix_size);
                     f = 0.06711056f * u + 0.00583715f * v;
                     result = fractional(52.9829189f * fractional(f));
-                    noise_tex.SetPixel(x,y,new Color (result, result, result, result));
+                    noise_tex.SetPixel(x,y,new Color (result, result, result, result)); // Only W channel matters here
+                    BeefShaders.BeefShaders.AppendLog("Generating, curently on row " + y.ToString() +" and column " + x.ToString());
                 }
             }
             noise_tex.Apply();
@@ -61,11 +62,13 @@ namespace Shader_Fixes
             SSAOPatch.LumContribution = 0.40f;
             
             //// GUH ////
-            /*if (!tex_generated)
+            if (!tex_generated)
             {
                 int size = 512;
+                BeefShaders.BeefShaders.AppendLog("Generating Noise Texture...");
                 SSAOPatch.NoiseTexture = beefs_CPU_destroyer_aka_generate_noise(size);
-            }*/
+                BeefShaders.BeefShaders.AppendLog("Applied Noise Texture");
+            }
         }
     }
 }
