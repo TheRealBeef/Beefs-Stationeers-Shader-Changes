@@ -3,6 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Shader_Fixes</RootNamespace>
+    <Configurations>Debug;Release;Into Folder</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Into Folder|AnyCPU'">
+    <OutputPath>D:\Steam\steamapps\common\Stationeers\BepInEx\plugins\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
