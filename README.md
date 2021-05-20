@@ -26,9 +26,9 @@ However, it could interfere with other plugin based mods that alter visuals
 ## Installation ##
 
     Download the latest release https://github.com/TheRealBeef/Stationeers-Shader-Fixes/releases/latest
-    Install BepInEx to your Stationeers folder in SteamApps/Common/Stationeers/
+    Drop BepInEx to your Stationeers folder in SteamApps/Common/Stationeers/
     Run Stationeers once to complete the BepInEx installation
-    Install ShaderFixes.dll to the Stationeers/BepInEx/plugins folder
+    Drop ShaderFixes.dll to the Stationeers/BepInEx/plugins folder
     Enjoy
 
 ## Contributions ##
