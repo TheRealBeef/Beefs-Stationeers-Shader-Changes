@@ -5,17 +5,20 @@ Beef's Shader Fixes<a name="TOP"></a>
 
   - Dynamically creates interleaved gradient noise texture on start (~1 second) to replace vanilla noise texture
   - Optimizes existing SSAO effect to increase both visual fidelity and performance (have your cake and eat it too)
+  - Optimize Volumetric Lighting - now much faster and can be run at medium or low quality with only a small loss in quality (vs big loss in vanilla) and huge increase in performance
+  - Expose some options for bloom
   
 ## Planned Features ##
 
 #### Short term: ####
-    - Add support for custom configuration file
-    - Alter tonemapping effect to further improve visuals
+    - Add support for custom configuration file to adjust high/low performance and high/low bloom effects
+    - Alter the tonemapping effect to further improve visuals
   
 #### Long term: ####
-    - Attempt to optimize volumetric lighting and shadows
+    - Attempt to optimize shadows
     - Implement PCSS to soften the jagged shadow edges
     - Implement HBAO to replace SSAO
+    - Implement some kind of 
 
 ## Compatibility ##
 
