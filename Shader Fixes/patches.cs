@@ -2,6 +2,7 @@
 using HarmonyLib;
 using UnityEngine;
 using Assets.Scripts;
+using UnityStandardAssets.ImageEffects;
 
 namespace Shader_Fixes
 {
@@ -15,7 +16,7 @@ namespace Shader_Fixes
     public class SSAOPatcher
     {
         public static bool tex_generated = false;
-
+        
         public static float fractional(float num)
         {
             return num - Mathf.Floor(num);
@@ -135,19 +136,13 @@ namespace Shader_Fixes
         }
     }
     /*
-        // Fixes to Tonemapping
-        [HarmonyPatch(typeof(DeluxeFilmicCurve), "Awake")]
-        public class BloomPatcher
+    [HarmonyPatch(typeof(CameraController),"Update")]
+    public class TonemapPatchers
+    {
+        static void Postfix(CameraController __instance)
         {
-            static void Postfix(UltimateBloom __instance)
-            {
-                UltimateBloom TonemapPatcher = __instance as UltimateBloom;
-
-                // Bloom Settings
-                TonemapPatcher.m_BloomIntensity = 0.15f;
-                TonemapPatcher.m_BloomThreshhold = 1.1f;
-                TonemapPatcher.m_HDR = UltimateBloom.HDRBloomMode.On;
-                TonemapPatcher.m_IntensityManagement = UltimateBloom.BloomIntensityManagement.Threshold;
-            }
-        } */
+            CameraController TonemapPatcher = __instance as CameraController;
+            
+        } 
+    }*/
 }
