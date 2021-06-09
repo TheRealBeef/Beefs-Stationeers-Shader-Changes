@@ -8,7 +8,7 @@ namespace Shader_Fixes
 {
     public class PatchConfigs
     {
-        public static bool I_Have_A_Strong_PC_And_GPU = false; // Determines whether to use quarter or half resolution, and how many samples.
+        public static bool I_Have_A_Strong_PC_And_GPU = true; // Determines whether to use quarter or half resolution, and how many samples.
     }
 
     // Fixes to SSAO
@@ -85,8 +85,8 @@ namespace Shader_Fixes
         {
             UltimateBloom TonemapPatcher = __instance as UltimateBloom;
 
-            TonemapPatcher.m_BloomIntensity = 0.15f;
-            TonemapPatcher.m_BloomThreshhold = 1.1f;
+            TonemapPatcher.m_BloomIntensity = 0.05f;
+            TonemapPatcher.m_BloomThreshhold = 1.3f;
             TonemapPatcher.m_HDR = UltimateBloom.HDRBloomMode.On;
             TonemapPatcher.m_IntensityManagement = UltimateBloom.BloomIntensityManagement.Threshold;
         }
