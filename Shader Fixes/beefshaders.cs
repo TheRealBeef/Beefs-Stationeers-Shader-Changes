@@ -1,7 +1,5 @@
-﻿using System;
+﻿using BepInEx;
 using HarmonyLib;
-using BepInEx;
-using UnityEngine;
 
 namespace BeefShaders
 {

@@ -1,14 +1,13 @@
-﻿using System;
+﻿using Assets.Scripts;
 using HarmonyLib;
+using System;
 using UnityEngine;
-using Assets.Scripts;
-using UnityStandardAssets.ImageEffects;
 
 namespace Shader_Fixes
 {
     public class PatchConfigs
     {
-        public static bool I_Have_A_Strong_PC_And_GPU = true; // Determines whether to use quarter or half resolution, and how many samples.
+        public static bool I_Have_A_Strong_PC_And_GPU = false; // Determines whether to use quarter or half resolution, and how many samples.
     }
 
     // Fixes to SSAO
@@ -16,7 +15,7 @@ namespace Shader_Fixes
     public class SSAOPatcher
     {
         public static bool tex_generated = false;
-        
+
         public static float fractional(float num)
         {
             return num - Mathf.Floor(num);
@@ -27,7 +26,7 @@ namespace Shader_Fixes
             noise_tex.filterMode = FilterMode.Point;
             float u = 0.0f;
             float v = 0.0f;
-            float pix_size = 2.0f;
+            float pix_size = 1.0f;
             float f = 0.0f;
             float result = 0.0f;
 
@@ -55,7 +54,7 @@ namespace Shader_Fixes
             BeefShaders.BeefShaders.AppendLog("Applying SSAO Settings");
 
             SSAOPatch.Bias = 0.35f;
-            SSAOPatch.Blur = SSAOPro.BlurMode.Gaussian;
+            SSAOPatch.Blur = SSAOPro.BlurMode.HighQualityBilateral;
             SSAOPatch.BlurDownsampling = true;
             SSAOPatch.Radius = 0.015f;
             SSAOPatch.BlurPasses = 2;
@@ -63,13 +62,13 @@ namespace Shader_Fixes
             SSAOPatch.CutoffFalloff = 20.0f;
             SSAOPatch.Distance = 3.0f;
             SSAOPatch.Downsampling = 2;
-            SSAOPatch.Intensity = 8.0f;
+            SSAOPatch.Intensity = 7.5f;
             SSAOPatch.LumContribution = 0.20f;
 
             //// GUH ////
             if (!tex_generated)
             {
-                int size = 256;
+                int size = 512;
                 BeefShaders.BeefShaders.AppendLog("Generating Noise Texture...");
                 SSAOPatch.NoiseTexture = beefs_CPU_destroyer_aka_generate_noise(size);
                 BeefShaders.BeefShaders.AppendLog("Applied Noise Texture");
@@ -78,15 +77,15 @@ namespace Shader_Fixes
     }
 
     // Changes to Bloom
-    [HarmonyPatch(typeof(UltimateBloom),"Awake")]
+    [HarmonyPatch(typeof(UltimateBloom), "Awake")]
     public class BloomPatcher
     {
         static void Postfix(UltimateBloom __instance)
         {
             UltimateBloom TonemapPatcher = __instance as UltimateBloom;
 
-            TonemapPatcher.m_BloomIntensity = 0.05f;
-            TonemapPatcher.m_BloomThreshhold = 1.3f;
+            TonemapPatcher.m_BloomIntensity = 0.07f;
+            TonemapPatcher.m_BloomThreshhold = 1.2f;
             TonemapPatcher.m_HDR = UltimateBloom.HDRBloomMode.On;
             TonemapPatcher.m_IntensityManagement = UltimateBloom.BloomIntensityManagement.Threshold;
         }
@@ -110,10 +109,10 @@ namespace Shader_Fixes
                 VolumetricPatcher.MaxRayLength = 100.0f; // 200.0f;
             }
 
-            
-            VolumetricPatcher.ExtinctionCoef = 0.01f;    // 0.0211f;
+
+            VolumetricPatcher.ExtinctionCoef = 0.012f;    // 0.0211f;
             VolumetricPatcher.MieG = 0.25f;              // 0.321f;
-            VolumetricPatcher.ScatteringCoef = 0.2f;    // 0.176f;
+            VolumetricPatcher.ScatteringCoef = 0.12f;    // 0.176f;
             VolumetricPatcher.SkyboxExtinctionCoef = 0.01f; // 0.246f;
         }
     }
