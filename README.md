@@ -1,4 +1,4 @@
-This is indubitably Beef's Shader Fixes<a name="TOP"></a>
+Beef's Shader Fixes<a name="TOP"></a>
 ===================
 
 ## Completed features ##
