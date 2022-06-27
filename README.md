@@ -1,4 +1,4 @@
-Beef's Shader Fixes<a name="TOP"></a>
+Beef's Shader Fixes (Depreciated) <a name="TOP"></a>
 ===================
 
 ## Completed features ##
