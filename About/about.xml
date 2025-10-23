@@ -2,7 +2,7 @@
 <ModMetadata xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <Name>Beef's Shader Changes</Name>
     <Author>TheRealBeef</Author>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
 
     <Description>
         [h1]Beef's Shader Changes[/h1]
@@ -38,6 +38,9 @@
     <WorkshopHandle>3592234706</WorkshopHandle>
 
     <ChangeLog>
+        2.0.1:
+        - Fixed helmet effect could stay on when returning to main menu
+
         2.0.0:
         - Complete rewrite of the original shader fixes mod
         - Updated SSAO/bloom fixes from the original

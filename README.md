@@ -47,6 +47,9 @@ Press **F10** while in-game to open the configuration menu. You can also configu
 
 ## Changelog
 
+>### Version 2.0.1
+> - Fixed helmet effect could stay on when returning to main menu
+
 >### Version 2.0.0
 > - Complete rewrite of the original shader fixes mod
 > - Updated SSAO/bloom fixes from the original

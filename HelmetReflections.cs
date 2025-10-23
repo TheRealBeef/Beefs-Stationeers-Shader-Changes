@@ -235,11 +235,6 @@ namespace BeefsShaderChanges
 
         static void Postfix()
         {
-            if (!IsInGameWorldExclMainMenu())
-            {
-                return;
-            }
-
             if (!ShaderChangesManager.IsInitialized ||
                 !(BeefsShaderChangesPlugin.EnableHelmetVisor?.Value ?? false))
             {
