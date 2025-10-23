@@ -35,6 +35,8 @@
         Source Code: https://github.com/TheRealBeef/Beefs-Stationeers-Shader-Changes
     </Description>
 
+    <WorkshopHandle>3592234706</WorkshopHandle>
+
     <ChangeLog>
         2.0.0:
         - Complete rewrite of the original shader fixes mod
