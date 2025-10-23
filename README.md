@@ -1,40 +1,64 @@
-Beef's Shader Fixes (Depreciated) <a name="TOP"></a>
-===================
+# Beef's Shader Changes
 
-## Completed features ##
+<p align="center" width="100%">
+<img alt="Shader Changes Logo" src="./About/thumb.png" width="45%" />
+</p>
 
-  - Dynamically creates interleaved gradient noise texture on start (~1 second) to replace vanilla noise texture
-  - Optimizes existing SSAO effect to increase both visual fidelity and performance (have your cake and eat it too)
-  - Optimize Volumetric Lighting - now much faster and can be run at medium or low quality with only a small loss in quality (vs big loss in vanilla) and huge increase in performance
-  - Expose some options for bloom
-  
-## Planned Features ##
+There is an in-game config menu with F10.
 
-#### Short term: ####
-    - Add support for custom configuration file to adjust high/low performance and high/low bloom effects
-    - Alter the tonemapping effect to further improve visuals
-  
-#### Long term: ####
-    - Attempt to optimize shadows
-    - Implement PCSS to soften the jagged shadow edges
-    - Implement HBAO to replace SSAO
-    - Implement some kind of 
+Post-processing and visual effects mod adding adjustments for in-game SSAO and Bloom and adding new effects.
 
-## Compatibility ##
+## Features
 
-This mod is compatible with existing saves and will not corrupt them when you install or uninstall the mod
+### SSAO (Ambient Occlusion)
+- Enables SSAO that's currently disabled in Stationeers
+- 3 quality presets (Low/Medium/High) plus fully customizable settings
+- Custom noise pattern
 
-However, it could interfere with other plugin based mods that alter visuals
+### Bloom
+- Adjustable intensity and threshold controls
 
-## Installation ##
+### Helmet Visor Reflections
+- When enabled, automatically activates when wearing closed helmets and deactivates when open or removing helmet
+- Adjustable reflection quality and intensity
 
-    Download the latest release https://github.com/TheRealBeef/Stationeers-Shader-Fixes/releases/latest
-    Drop BepInEx to your Stationeers folder in SteamApps/Common/Stationeers/
-    Run Stationeers once to complete the BepInEx installation
-    Drop ShaderFixes.dll to the Stationeers/BepInEx/plugins folder
-    Enjoy
+### Depth of Field
+- Not really great for gameplay for most, but great for screenshots
+- Adjustable focal distance, focal size, and aperture
 
-## Contributions ##
+## Requirements
+**WARNING:** This is a BepInEx Plugin Mod. It requires BepInEx to be installed.
 
-    Please, feel free to contribute either in issues or in pull requests, or to fork 
-    this repo for your own take on Stationeers visuals.
+See: [https://github.com/StationeersLaunchPad/StationeersLaunchPad](https://github.com/StationeersLaunchPad/StationeersLaunchPad)
+
+## Installation
+
+1. Ensure you have BepInEx and StationeersLaunchPad installed.
+2. Install from the Steam Workshop, or manually place the folder with DLL file into your `/BepInEx/plugins/` folder.
+
+## Usage
+
+Press **F10** while in-game to open the configuration menu. You can also configure settings through BepInEx config files located at:
+`/BepInEx/config/BeefsShaderChanges.cfg`
+
+### Controls
+- **F10** - Toggle configuration menu
+- The menu only appears when in-game (not in menus or splash screens)
+
+## Changelog
+
+>### Version 2.0.0
+> - Complete rewrite of the original shader fixes mod
+> - Updated SSAO/bloom fixes from the original
+> - Added helmet visor effects 
+> - Added depth of field effect
+> - Added in-game configuration menu (F10)
+
+## Known Issues
+
+
+## Roadmap
+
+## Source Code
+
+The source code is available on GitHub: TBD

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetadata xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Name>Beef's Shader Changes</Name>
+    <Author>TheRealBeef</Author>
+    <Version>2.0.0</Version>
+
+    <Description>
+        [h1]Beef's Shader Changes[/h1]
+        [b]WARNING:[/b] This is a BepInEx Plugin Mod. It requires BepInEx to be installed.
+        See: https://github.com/StationeersLaunchPad/StationeersLaunchPad
+
+        There is an in-game config menu with F10.
+
+        Post-processing and visual effects mod adding adjustments for in-game SSAO and Bloom and adding new effects.
+
+        [h2]Features:[/h2]
+        - [b]SSAO (Ambient Occlusion)[/b]
+        > Enables SSAO that's currently disabled in Stationeers
+        > 3 quality presets (Low/Medium/High) plus fully customizable settings
+        > Custom noise pattern
+
+        - [b]Bloom[/b]
+        > Adjustable intensity and threshold controls
+
+        - [b]Helmet Visor Reflections[/b]
+        > When enabled, automatically activates when wearing closed helmets and deactivates when open or removing helmet
+        > Adjustable reflection quality and intensity
+
+        - [b]Depth of Field[/b]
+        > Not really great for gameplay for most, but great for screenshots
+        > Adjustable focal distance, focal size, and aperture
+
+        Configuration available through F10 in-game menu or BepInEx config files.
+
+        Source Code: TBD
+    </Description>
+
+    <ChangeLog>
+        2.0.0:
+        - Complete rewrite of the original shader fixes mod
+        - Updated SSAO/bloom fixes from the original
+        - Added helmet visor effects
+        - Added depth of field effect
+        - Added in-game configuration menu (F10)
+    </ChangeLog>
+
+    <Tags>
+        <Tag>Graphics</Tag>
+        <Tag>Post-Processing</Tag>
+        <Tag>Visual Effects</Tag>
+        <Tag>BepInEx</Tag>
+    </Tags>
+
+    <InGameDescription>
+        <![CDATA[
+<size=30><color=#ffa500>Beef's Shader Changes</color></size>
+<b>WARNING:</b> <color=#ff0000>This is a BepInEx Plugin Mod. It requires BepInEx to be installed.</color>
+See: https://github.com/StationeersLaunchPad/StationeersLaunchPad
+
+There is an in-game config menu with F10.
+
+Post-processing and visual effects mod adding adjustments for in-game SSAO and Bloom and adding new effects.
+
+<b>Features:</b>
+
+<b>SSAO (Ambient Occlusion)</b>
+- Enables SSAO that's currently disabled in Stationeers
+- 3 quality presets (Low/Medium/High) plus fully customizable settings
+- Custom noise pattern
+
+<b>Bloom</b>
+- Adjustable intensity and threshold controls
+
+<b>Helmet Visor Reflections</b>
+- When enabled, automatically activates when wearing closed helmets and deactivates when open or removing helmet
+- Adjustable reflection quality and intensity
+
+<b>Depth of Field</b>
+- Not really great for gameplay for most, but great for screenshots
+- Adjustable focal distance, focal size, and aperture
+
+Configuration available through F10 in-game menu or BepInEx config files.
+
+Source Code: TBD
+]]>
+    </InGameDescription>
+</ModMetadata>
