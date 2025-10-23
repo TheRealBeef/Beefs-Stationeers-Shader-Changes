@@ -32,7 +32,7 @@
 
         Configuration available through F10 in-game menu or BepInEx config files.
 
-        Source Code: TBD
+        Source Code: https://github.com/TheRealBeef/Beefs-Stationeers-Shader-Changes
     </Description>
 
     <ChangeLog>
@@ -81,7 +81,7 @@ Post-processing and visual effects mod adding adjustments for in-game SSAO and B
 
 Configuration available through F10 in-game menu or BepInEx config files.
 
-Source Code: TBD
+Source Code: https://github.com/TheRealBeef/Beefs-Stationeers-Shader-Changes
 ]]>
     </InGameDescription>
 </ModMetadata>

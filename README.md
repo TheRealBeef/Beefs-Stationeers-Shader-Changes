@@ -61,4 +61,4 @@ Press **F10** while in-game to open the configuration menu. You can also configu
 
 ## Source Code
 
-The source code is available on GitHub: TBD
+The source code is available on GitHub: https://github.com/TheRealBeef/Beefs-Stationeers-Shader-Changes
