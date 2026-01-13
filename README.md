@@ -61,6 +61,7 @@ Press **F10** while in-game to open the configuration menu. You can also configu
 
 
 ## Roadmap
+- [ ] Add an option to center focus (either single point or avg of multiple points around center for DoF
 
 ## Source Code
 
