@@ -16,7 +16,13 @@ namespace BeefsShaderChanges
         private GUIStyle _orangeBoxStyle;
         private GUIStyle _greenBoxStyle;
         private GUIStyle _cyanBoxStyle;
+        private GUIStyle _foldoutStyle;
+        private GUIStyle _foldoutStyleExpanded;
         private bool _stylesInitialized = false;
+        private bool _ssaoAdvancedExpanded = false;
+        private bool _dofAutoFocusAdvancedExpanded = false;
+        private bool _dofBlurSettingsExpanded = false;
+        private bool _dofQualityExpanded = false;
 
         private void Update()
         {
@@ -162,6 +168,30 @@ namespace BeefsShaderChanges
             GUI.DragWindow();
         }
 
+        private bool DrawFoldout(string label, bool expanded)
+        {
+            GUIStyle style = expanded ? _foldoutStyleExpanded : _foldoutStyle;
+            string arrow = expanded ? "▼ " : "▶ ";
+            if (GUILayout.Button(arrow + label, style ?? GUI.skin.button))
+            {
+                return !expanded;
+            }
+            return expanded;
+        }
+
+        private void BeginIndent(float pixels = 15f)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(pixels);
+            GUILayout.BeginVertical();
+        }
+
+        private void EndIndent()
+        {
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+        }
+
         private void DrawSSAOSettings()
         {
             GUILayout.BeginVertical(_blueBoxStyle);
@@ -216,87 +246,94 @@ namespace BeefsShaderChanges
                 if (BeefsShaderChangesPlugin.QualityPreset.Value == "Custom")
                 {
                     GUILayout.Space(3);
-                    GUILayout.Label("SSAO Settings", GUILayout.ExpandWidth(true));
+                    _ssaoAdvancedExpanded = DrawFoldout("Advanced Settings", _ssaoAdvancedExpanded);
 
-                    int currentSamples = BeefsShaderChangesPlugin.CustomSamples.Value;
-                    GUILayout.Label($"Sample Count: {SSAOPresets.GetSampleCountName(currentSamples)} ({currentSamples})");
-                    int newSamples = Mathf.RoundToInt(GUILayout.HorizontalSlider(currentSamples, 0, 4));
-                    if (newSamples != currentSamples)
+                    if (_ssaoAdvancedExpanded)
                     {
-                        BeefsShaderChangesPlugin.CustomSamples.Value = newSamples;
-                        CameraController.SetAmbientOcclusion();
-                    }
+                        BeginIndent();
 
-                    int currentDownsampling = BeefsShaderChangesPlugin.CustomDownsampling.Value;
-                    GUILayout.Label($"Downsampling: {currentDownsampling}x");
-                    int newDownsampling = Mathf.RoundToInt(GUILayout.HorizontalSlider(currentDownsampling, 1, 2));
-                    if (newDownsampling != currentDownsampling)
-                    {
-                        BeefsShaderChangesPlugin.CustomDownsampling.Value = newDownsampling;
-                        CameraController.SetAmbientOcclusion();
-                    }
+                        int currentSamples = BeefsShaderChangesPlugin.CustomSamples.Value;
+                        GUILayout.Label($"Sample Count: {SSAOPresets.GetSampleCountName(currentSamples)} ({currentSamples})");
+                        int newSamples = Mathf.RoundToInt(GUILayout.HorizontalSlider(currentSamples, 0, 4));
+                        if (newSamples != currentSamples)
+                        {
+                            BeefsShaderChangesPlugin.CustomSamples.Value = newSamples;
+                            CameraController.SetAmbientOcclusion();
+                        }
 
-                    float currentRadius = BeefsShaderChangesPlugin.CustomRadius.Value;
-                    GUILayout.Label($"Radius: {currentRadius:F3}");
-                    float newRadius = GUILayout.HorizontalSlider(currentRadius, 0.001f, 0.5f);
-                    if (!Mathf.Approximately(newRadius, currentRadius))
-                    {
-                        BeefsShaderChangesPlugin.CustomRadius.Value = newRadius;
-                        CameraController.SetAmbientOcclusion();
-                    }
+                        int currentDownsampling = BeefsShaderChangesPlugin.CustomDownsampling.Value;
+                        GUILayout.Label($"Downsampling: {currentDownsampling}x");
+                        int newDownsampling = Mathf.RoundToInt(GUILayout.HorizontalSlider(currentDownsampling, 1, 2));
+                        if (newDownsampling != currentDownsampling)
+                        {
+                            BeefsShaderChangesPlugin.CustomDownsampling.Value = newDownsampling;
+                            CameraController.SetAmbientOcclusion();
+                        }
 
-                    float currentIntensity = BeefsShaderChangesPlugin.CustomIntensity.Value;
-                    GUILayout.Label($"Intensity: {currentIntensity:F2}");
-                    float newIntensity = GUILayout.HorizontalSlider(currentIntensity, 0f, 16f);
-                    if (!Mathf.Approximately(newIntensity, currentIntensity))
-                    {
-                        BeefsShaderChangesPlugin.CustomIntensity.Value = newIntensity;
-                        CameraController.SetAmbientOcclusion();
-                    }
+                        float currentRadius = BeefsShaderChangesPlugin.CustomRadius.Value;
+                        GUILayout.Label($"Radius: {currentRadius:F3}");
+                        float newRadius = GUILayout.HorizontalSlider(currentRadius, 0.001f, 0.5f);
+                        if (!Mathf.Approximately(newRadius, currentRadius))
+                        {
+                            BeefsShaderChangesPlugin.CustomRadius.Value = newRadius;
+                            CameraController.SetAmbientOcclusion();
+                        }
 
-                    float currentBias = BeefsShaderChangesPlugin.CustomBias.Value;
-                    GUILayout.Label($"Bias: {currentBias:F2}");
-                    float newBias = GUILayout.HorizontalSlider(currentBias, 0f, 1f);
-                    if (!Mathf.Approximately(newBias, currentBias))
-                    {
-                        BeefsShaderChangesPlugin.CustomBias.Value = newBias;
-                        CameraController.SetAmbientOcclusion();
-                    }
+                        float currentIntensity = BeefsShaderChangesPlugin.CustomIntensity.Value;
+                        GUILayout.Label($"Intensity: {currentIntensity:F2}");
+                        float newIntensity = GUILayout.HorizontalSlider(currentIntensity, 0f, 16f);
+                        if (!Mathf.Approximately(newIntensity, currentIntensity))
+                        {
+                            BeefsShaderChangesPlugin.CustomIntensity.Value = newIntensity;
+                            CameraController.SetAmbientOcclusion();
+                        }
 
-                    float currentDistance = BeefsShaderChangesPlugin.CustomDistance.Value;
-                    GUILayout.Label($"Distance: {currentDistance:F1}");
-                    float newDistance = GUILayout.HorizontalSlider(currentDistance, 0f, 10f);
-                    if (!Mathf.Approximately(newDistance, currentDistance))
-                    {
-                        BeefsShaderChangesPlugin.CustomDistance.Value = newDistance;
-                        CameraController.SetAmbientOcclusion();
-                    }
+                        float currentBias = BeefsShaderChangesPlugin.CustomBias.Value;
+                        GUILayout.Label($"Bias: {currentBias:F2}");
+                        float newBias = GUILayout.HorizontalSlider(currentBias, 0f, 1f);
+                        if (!Mathf.Approximately(newBias, currentBias))
+                        {
+                            BeefsShaderChangesPlugin.CustomBias.Value = newBias;
+                            CameraController.SetAmbientOcclusion();
+                        }
 
-                    float currentLum = BeefsShaderChangesPlugin.CustomLumContribution.Value;
-                    GUILayout.Label($"Luminance Contribution: {currentLum:F2}");
-                    float newLum = GUILayout.HorizontalSlider(currentLum, 0f, 1f);
-                    if (!Mathf.Approximately(newLum, currentLum))
-                    {
-                        BeefsShaderChangesPlugin.CustomLumContribution.Value = newLum;
-                        CameraController.SetAmbientOcclusion();
-                    }
+                        float currentDistance = BeefsShaderChangesPlugin.CustomDistance.Value;
+                        GUILayout.Label($"Distance: {currentDistance:F1}");
+                        float newDistance = GUILayout.HorizontalSlider(currentDistance, 0f, 10f);
+                        if (!Mathf.Approximately(newDistance, currentDistance))
+                        {
+                            BeefsShaderChangesPlugin.CustomDistance.Value = newDistance;
+                            CameraController.SetAmbientOcclusion();
+                        }
 
-                    int currentBlur = BeefsShaderChangesPlugin.CustomBlurPasses.Value;
-                    GUILayout.Label($"Blur Passes: {currentBlur}");
-                    int newBlur = Mathf.RoundToInt(GUILayout.HorizontalSlider(currentBlur, 1, 4));
-                    if (newBlur != currentBlur)
-                    {
-                        BeefsShaderChangesPlugin.CustomBlurPasses.Value = newBlur;
-                        CameraController.SetAmbientOcclusion();
-                    }
+                        float currentLum = BeefsShaderChangesPlugin.CustomLumContribution.Value;
+                        GUILayout.Label($"Luminance Contribution: {currentLum:F2}");
+                        float newLum = GUILayout.HorizontalSlider(currentLum, 0f, 1f);
+                        if (!Mathf.Approximately(newLum, currentLum))
+                        {
+                            BeefsShaderChangesPlugin.CustomLumContribution.Value = newLum;
+                            CameraController.SetAmbientOcclusion();
+                        }
 
-                    float currentCutoff = BeefsShaderChangesPlugin.CustomCutoffDistance.Value;
-                    GUILayout.Label($"Cutoff Distance: {currentCutoff:F0}");
-                    float newCutoff = GUILayout.HorizontalSlider(currentCutoff, 10f, 100f);
-                    if (!Mathf.Approximately(newCutoff, currentCutoff))
-                    {
-                        BeefsShaderChangesPlugin.CustomCutoffDistance.Value = newCutoff;
-                        CameraController.SetAmbientOcclusion();
+                        int currentBlur = BeefsShaderChangesPlugin.CustomBlurPasses.Value;
+                        GUILayout.Label($"Blur Passes: {currentBlur}");
+                        int newBlur = Mathf.RoundToInt(GUILayout.HorizontalSlider(currentBlur, 1, 4));
+                        if (newBlur != currentBlur)
+                        {
+                            BeefsShaderChangesPlugin.CustomBlurPasses.Value = newBlur;
+                            CameraController.SetAmbientOcclusion();
+                        }
+
+                        float currentCutoff = BeefsShaderChangesPlugin.CustomCutoffDistance.Value;
+                        GUILayout.Label($"Cutoff Distance: {currentCutoff:F0}");
+                        float newCutoff = GUILayout.HorizontalSlider(currentCutoff, 10f, 100f);
+                        if (!Mathf.Approximately(newCutoff, currentCutoff))
+                        {
+                            BeefsShaderChangesPlugin.CustomCutoffDistance.Value = newCutoff;
+                            CameraController.SetAmbientOcclusion();
+                        }
+
+                        EndIndent();
                     }
                 }
             }
@@ -397,69 +434,193 @@ namespace BeefsShaderChanges
 
             if (BeefsShaderChangesPlugin.EnableDepthOfField.Value)
             {
-                float current = BeefsShaderChangesPlugin.DOFFocalLength.Value;
-                GUILayout.Label($"Focal Distance: {current:F1}m");
-                float newVal = GUILayout.HorizontalSlider(current, 0.1f, 100f);
-                if (!Mathf.Approximately(newVal, current))
+                GUILayout.Space(5);
+
+                var currentAutoFocus = BeefsShaderChangesPlugin.DOFAutoFocus.Value;
+                var newAutoFocus = GUILayout.Toggle(currentAutoFocus, $"Auto Focus ({(currentAutoFocus ? "ON" : "OFF")})");
+                if (newAutoFocus != currentAutoFocus)
                 {
-                    BeefsShaderChangesPlugin.DOFFocalLength.Value = newVal;
+                    BeefsShaderChangesPlugin.DOFAutoFocus.Value = newAutoFocus;
                     ShaderChangesManager.UpdateDepthOfField();
                 }
 
-                current = BeefsShaderChangesPlugin.DOFFocalSize.Value;
-                GUILayout.Label($"Focal Size: {current:F2}");
-                newVal = GUILayout.HorizontalSlider(current, 0f, 2f);
-                if (!Mathf.Approximately(newVal, current))
+                GUILayout.Space(3);
+
+                if (BeefsShaderChangesPlugin.DOFAutoFocus.Value)
                 {
-                    BeefsShaderChangesPlugin.DOFFocalSize.Value = newVal;
-                    ShaderChangesManager.UpdateDepthOfField();
+                    int currentMode = BeefsShaderChangesPlugin.DOFAutoFocusMode.Value;
+                    GUILayout.Label("Sample Mode:");
+                    GUILayout.BeginHorizontal();
+                    if (GUILayout.Button("Single", currentMode == 0 ? GUI.skin.box : GUI.skin.button))
+                    {
+                        BeefsShaderChangesPlugin.DOFAutoFocusMode.Value = 0;
+                        ShaderChangesManager.UpdateDepthOfField();
+                    }
+                    if (GUILayout.Button("Averaged", currentMode == 1 ? GUI.skin.box : GUI.skin.button))
+                    {
+                        BeefsShaderChangesPlugin.DOFAutoFocusMode.Value = 1;
+                        ShaderChangesManager.UpdateDepthOfField();
+                    }
+                    GUILayout.EndHorizontal();
+
+                    if (BeefsShaderChangesPlugin.DOFAutoFocusMode.Value == 1)
+                    {
+                        float currentRadius = BeefsShaderChangesPlugin.DOFAutoFocusSampleRadius.Value;
+                        GUILayout.Label($"Sample Spread: {currentRadius * 100:F1}");
+                        float newRadius = GUILayout.HorizontalSlider(currentRadius, 0.01f, 0.25f);
+                        if (!Mathf.Approximately(newRadius, currentRadius))
+                        {
+                            BeefsShaderChangesPlugin.DOFAutoFocusSampleRadius.Value = newRadius;
+                            ShaderChangesManager.UpdateDepthOfField();
+                        }
+                    }
+
+                    var dof = ShaderChangesManager.GetDepthOfField();
+                    if (dof != null)
+                    {
+                        GUILayout.Label($"Focus Distance: {dof.GetCurrentFocalDistance():F1}m");
+                    }
+
+                    GUILayout.Space(3);
+
+                    _dofAutoFocusAdvancedExpanded = DrawFoldout("Advanced", _dofAutoFocusAdvancedExpanded);
+
+                    if (_dofAutoFocusAdvancedExpanded)
+                    {
+                        BeginIndent();
+
+                        float currentOffset = BeefsShaderChangesPlugin.DOFAutoFocusOffset.Value;
+                        GUILayout.Label($"Focus Offset: {currentOffset:F1}m");
+                        float newOffset = GUILayout.HorizontalSlider(currentOffset, -10f, 10f);
+                        if (!Mathf.Approximately(newOffset, currentOffset))
+                        {
+                            BeefsShaderChangesPlugin.DOFAutoFocusOffset.Value = newOffset;
+                            ShaderChangesManager.UpdateDepthOfField();
+                        }
+
+                        float currentSmooth = BeefsShaderChangesPlugin.DOFAutoFocusSmoothTime.Value;
+                        GUILayout.Label($"Smooth Time: {currentSmooth:F2}s {(currentSmooth < 0.01f ? "(instant)" : "")}");
+                        float newSmooth = GUILayout.HorizontalSlider(currentSmooth, 0f, 1f);
+                        if (!Mathf.Approximately(newSmooth, currentSmooth))
+                        {
+                            BeefsShaderChangesPlugin.DOFAutoFocusSmoothTime.Value = newSmooth;
+                            ShaderChangesManager.UpdateDepthOfField();
+                        }
+
+                        float currentMin = BeefsShaderChangesPlugin.DOFAutoFocusMinDistance.Value;
+                        GUILayout.Label($"Min Distance: {currentMin:F1}m");
+                        float newMin = GUILayout.HorizontalSlider(currentMin, 0.1f, 10f);
+                        if (!Mathf.Approximately(newMin, currentMin))
+                        {
+                            BeefsShaderChangesPlugin.DOFAutoFocusMinDistance.Value = newMin;
+                            ShaderChangesManager.UpdateDepthOfField();
+                        }
+
+                        float currentMax = BeefsShaderChangesPlugin.DOFAutoFocusMaxDistance.Value;
+                        GUILayout.Label($"Max Distance: {currentMax:F0}m");
+                        float newMax = GUILayout.HorizontalSlider(currentMax, 10f, 500f);
+                        if (!Mathf.Approximately(newMax, currentMax))
+                        {
+                            BeefsShaderChangesPlugin.DOFAutoFocusMaxDistance.Value = newMax;
+                            ShaderChangesManager.UpdateDepthOfField();
+                        }
+
+                        var currentShowIndicator = BeefsShaderChangesPlugin.DOFShowFocusIndicator.Value;
+                        var newShowIndicator = GUILayout.Toggle(currentShowIndicator, $"Show Focus Indicator ({currentShowIndicator})");
+                        if (newShowIndicator != currentShowIndicator)
+                        {
+                            BeefsShaderChangesPlugin.DOFShowFocusIndicator.Value = newShowIndicator;
+                            ShaderChangesManager.UpdateDepthOfField();
+                        }
+
+                        EndIndent();
+                    }
+                }
+                else
+                {
+                    float current = BeefsShaderChangesPlugin.DOFFocalLength.Value;
+                    GUILayout.Label($"Focal Distance: {current:F1}m");
+                    float newVal = GUILayout.HorizontalSlider(current, 0.1f, 100f);
+                    if (!Mathf.Approximately(newVal, current))
+                    {
+                        BeefsShaderChangesPlugin.DOFFocalLength.Value = newVal;
+                        ShaderChangesManager.UpdateDepthOfField();
+                    }
                 }
 
-                current = BeefsShaderChangesPlugin.DOFAperture.Value;
-                GUILayout.Label($"Aperture: {current:F2}");
-                newVal = GUILayout.HorizontalSlider(current, 0f, 1f);
-                if (!Mathf.Approximately(newVal, current))
+                GUILayout.Space(5);
+                _dofBlurSettingsExpanded = DrawFoldout("Blur Settings", _dofBlurSettingsExpanded);
+
+                if (_dofBlurSettingsExpanded)
                 {
-                    BeefsShaderChangesPlugin.DOFAperture.Value = newVal;
-                    ShaderChangesManager.UpdateDepthOfField();
+                    BeginIndent();
+
+                    float currentFocalSize = BeefsShaderChangesPlugin.DOFFocalSize.Value;
+                    GUILayout.Label($"Focal Size (sharp range): {currentFocalSize:F2}");
+                    float newFocalSize = GUILayout.HorizontalSlider(currentFocalSize, 0f, 2f);
+                    if (!Mathf.Approximately(newFocalSize, currentFocalSize))
+                    {
+                        BeefsShaderChangesPlugin.DOFFocalSize.Value = newFocalSize;
+                        ShaderChangesManager.UpdateDepthOfField();
+                    }
+
+                    float currentAperture = BeefsShaderChangesPlugin.DOFAperture.Value;
+                    GUILayout.Label($"Aperture (blur falloff): {currentAperture:F2}");
+                    float newAperture = GUILayout.HorizontalSlider(currentAperture, 0f, 1f);
+                    if (!Mathf.Approximately(newAperture, currentAperture))
+                    {
+                        BeefsShaderChangesPlugin.DOFAperture.Value = newAperture;
+                        ShaderChangesManager.UpdateDepthOfField();
+                    }
+
+                    float currentMaxBlur = BeefsShaderChangesPlugin.DOFMaxBlurSize.Value;
+                    GUILayout.Label($"Max Blur: {currentMaxBlur:F1}");
+                    float newMaxBlur = GUILayout.HorizontalSlider(currentMaxBlur, 0.1f, 10f);
+                    if (!Mathf.Approximately(newMaxBlur, currentMaxBlur))
+                    {
+                        BeefsShaderChangesPlugin.DOFMaxBlurSize.Value = newMaxBlur;
+                        ShaderChangesManager.UpdateDepthOfField();
+                    }
+
+                    EndIndent();
                 }
 
-                current = BeefsShaderChangesPlugin.DOFMaxBlurSize.Value;
-                GUILayout.Label($"Max Blur: {current:F1}");
-                newVal = GUILayout.HorizontalSlider(current, 0.1f, 10f);
-                if (!Mathf.Approximately(newVal, current))
-                {
-                    BeefsShaderChangesPlugin.DOFMaxBlurSize.Value = newVal;
-                    ShaderChangesManager.UpdateDepthOfField();
-                }
+                _dofQualityExpanded = DrawFoldout("Quality", _dofQualityExpanded);
 
-                int currentSamples = BeefsShaderChangesPlugin.DOFSampleCount.Value;
-                string[] sampleNames = new string[] { "Low", "Medium", "High" };
-                GUILayout.Label($"Sample Quality: {sampleNames[currentSamples]}");
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Low", currentSamples == 0 ? GUI.skin.box : GUI.skin.button))
+                if (_dofQualityExpanded)
                 {
-                    BeefsShaderChangesPlugin.DOFSampleCount.Value = 0;
-                    ShaderChangesManager.UpdateDepthOfField();
-                }
-                if (GUILayout.Button("Medium", currentSamples == 1 ? GUI.skin.box : GUI.skin.button))
-                {
-                    BeefsShaderChangesPlugin.DOFSampleCount.Value = 1;
-                    ShaderChangesManager.UpdateDepthOfField();
-                }
-                if (GUILayout.Button("High", currentSamples == 2 ? GUI.skin.box : GUI.skin.button))
-                {
-                    BeefsShaderChangesPlugin.DOFSampleCount.Value = 2;
-                    ShaderChangesManager.UpdateDepthOfField();
-                }
-                GUILayout.EndHorizontal();
+                    BeginIndent();
 
-                var currentHR = BeefsShaderChangesPlugin.DOFHighResolution.Value;
-                var newHR = GUILayout.Toggle(currentHR, $"High Resolution ({currentHR})");
-                if (newHR != currentHR)
-                {
-                    BeefsShaderChangesPlugin.DOFHighResolution.Value = newHR;
-                    ShaderChangesManager.UpdateDepthOfField();
+                    int currentSamples = BeefsShaderChangesPlugin.DOFSampleCount.Value;
+                    string[] sampleNames = new string[] { "Low", "Medium", "High" };
+                    GUILayout.Label($"Sample Quality: {sampleNames[currentSamples]}");
+                    GUILayout.BeginHorizontal();
+                    if (GUILayout.Button("Low", currentSamples == 0 ? GUI.skin.box : GUI.skin.button))
+                    {
+                        BeefsShaderChangesPlugin.DOFSampleCount.Value = 0;
+                        ShaderChangesManager.UpdateDepthOfField();
+                    }
+                    if (GUILayout.Button("Medium", currentSamples == 1 ? GUI.skin.box : GUI.skin.button))
+                    {
+                        BeefsShaderChangesPlugin.DOFSampleCount.Value = 1;
+                        ShaderChangesManager.UpdateDepthOfField();
+                    }
+                    if (GUILayout.Button("High", currentSamples == 2 ? GUI.skin.box : GUI.skin.button))
+                    {
+                        BeefsShaderChangesPlugin.DOFSampleCount.Value = 2;
+                        ShaderChangesManager.UpdateDepthOfField();
+                    }
+                    GUILayout.EndHorizontal();
+
+                    var currentHR = BeefsShaderChangesPlugin.DOFHighResolution.Value;
+                    var newHR = GUILayout.Toggle(currentHR, $"High Resolution ({currentHR})");
+                    if (newHR != currentHR)
+                    {
+                        BeefsShaderChangesPlugin.DOFHighResolution.Value = newHR;
+                        ShaderChangesManager.UpdateDepthOfField();
+                    }
+
+                    EndIndent();
                 }
             }
 
@@ -483,6 +644,13 @@ namespace BeefsShaderChanges
             _orangeBoxStyle = MakeStyle(new Color(0.65f, 0.27f, 0f, 0.8f), Color.white);
             _greenBoxStyle = MakeStyle(new Color(0f, 0.5f, 0.05f, 0.8f), Color.white);
             _cyanBoxStyle = MakeStyle(new Color(0f, 0.4f, 0.5f, 0.8f), Color.white);
+
+            _foldoutStyle = new GUIStyle(GUI.skin.button);
+            _foldoutStyle.alignment = TextAnchor.MiddleLeft;
+            _foldoutStyle.fontStyle = FontStyle.Normal;
+
+            _foldoutStyleExpanded = new GUIStyle(_foldoutStyle);
+            _foldoutStyleExpanded.fontStyle = FontStyle.Bold;
 
             _stylesInitialized = true;
         }

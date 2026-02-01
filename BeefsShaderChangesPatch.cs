@@ -107,13 +107,24 @@ namespace BeefsShaderChanges
                     _depthOfField.aperture = BeefsShaderChangesPlugin.DOFAperture.Value;
                     _depthOfField.maxBlurSize = BeefsShaderChangesPlugin.DOFMaxBlurSize.Value;
                     _depthOfField.highResolution = BeefsShaderChangesPlugin.DOFHighResolution.Value;
-
                     _depthOfField.blurSampleCount = BeefsShaderChangesPlugin.DOFSampleCount.Value switch
                     {
                         0 => DepthOfFieldEffect.BlurSampleCount.Low,
                         1 => DepthOfFieldEffect.BlurSampleCount.Medium,
                         _ => DepthOfFieldEffect.BlurSampleCount.High
                     };
+                    _depthOfField.autoFocus = BeefsShaderChangesPlugin.DOFAutoFocus.Value;
+                    _depthOfField.autoFocusMode = BeefsShaderChangesPlugin.DOFAutoFocusMode.Value switch
+                    {
+                        0 => DepthOfFieldEffect.AutoFocusMode.SinglePoint,
+                        _ => DepthOfFieldEffect.AutoFocusMode.NinePointAverage
+                    };
+                    _depthOfField.autoFocusSampleRadius = BeefsShaderChangesPlugin.DOFAutoFocusSampleRadius.Value;
+                    _depthOfField.autoFocusOffset = BeefsShaderChangesPlugin.DOFAutoFocusOffset.Value;
+                    _depthOfField.autoFocusSmoothTime = BeefsShaderChangesPlugin.DOFAutoFocusSmoothTime.Value;
+                    _depthOfField.autoFocusMinDistance = BeefsShaderChangesPlugin.DOFAutoFocusMinDistance.Value;
+                    _depthOfField.autoFocusMaxDistance = BeefsShaderChangesPlugin.DOFAutoFocusMaxDistance.Value;
+                    _depthOfField.showFocusPoint = BeefsShaderChangesPlugin.DOFShowFocusIndicator.Value;
                 }
             }
             catch (Exception e)
@@ -143,6 +154,11 @@ namespace BeefsShaderChanges
             {
                 BeefsShaderChangesPlugin.Log.LogError($"Error updating helmet visor: {e.Message}\n{e.StackTrace}");
             }
+        }
+
+        public static DepthOfFieldEffect GetDepthOfField()
+        {
+            return _depthOfField;
         }
 
         private static bool EnsureInitialized()

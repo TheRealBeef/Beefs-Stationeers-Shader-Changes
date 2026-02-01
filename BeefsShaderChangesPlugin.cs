@@ -46,6 +46,15 @@ namespace BeefsShaderChanges
         public static ConfigEntry<bool> DOFHighResolution;
         public static ConfigEntry<int> DOFSampleCount;
 
+        public static ConfigEntry<bool> DOFAutoFocus;
+        public static ConfigEntry<int> DOFAutoFocusMode;
+        public static ConfigEntry<float> DOFAutoFocusSampleRadius;
+        public static ConfigEntry<float> DOFAutoFocusOffset;
+        public static ConfigEntry<float> DOFAutoFocusSmoothTime;
+        public static ConfigEntry<float> DOFAutoFocusMinDistance;
+        public static ConfigEntry<float> DOFAutoFocusMaxDistance;
+        public static ConfigEntry<bool> DOFShowFocusIndicator;
+
         private void Awake()
         {
             Instance = this;
@@ -130,15 +139,15 @@ namespace BeefsShaderChanges
                 "Enable depth of field");
 
             DOFFocalLength = Config.Bind("Depth of Field", "DOFFocalLength", 2.0f,
-                new ConfigDescription("Distance to focus point",
+                new ConfigDescription("Distance to focus point (used when auto-focus is disabled)",
                     new AcceptableValueRange<float>(0.1f, 100f)));
 
             DOFFocalSize = Config.Bind("Depth of Field", "DOFFocalSize", 0.2f,
-                new ConfigDescription("Size of focused area",
+                new ConfigDescription("Size of focused area (depth range that stays sharp)",
                     new AcceptableValueRange<float>(0f, 2f)));
 
             DOFAperture = Config.Bind("Depth of Field", "DOFAperture", 0.3f,
-                new ConfigDescription("Lens aperture",
+                new ConfigDescription("Lens aperture (affects blur falloff)",
                     new AcceptableValueRange<float>(0f, 1f)));
 
             DOFMaxBlurSize = Config.Bind("Depth of Field", "DOFMaxBlurSize", 5.0f,
@@ -151,6 +160,37 @@ namespace BeefsShaderChanges
             DOFSampleCount = Config.Bind("Depth of Field", "DOFSampleCount", 2,
                 new ConfigDescription("Blur sample quality (0=Low, 1=Medium, 2=High)",
                     new AcceptableValueRange<int>(0, 2)));
+
+            DOFAutoFocus = Config.Bind("Depth of Field Auto Focus", "DOFAutoFocus", false,
+                "Enable auto-focus (automatically focus on what's at the center of the screen)");
+
+            DOFAutoFocusMode = Config.Bind("Depth of Field Auto Focus", "DOFAutoFocusMode", 0,
+                new ConfigDescription("Focus sampling mode (0=Single center point, 1=9-point average)",
+                    new AcceptableValueRange<int>(0, 1)));
+
+            DOFAutoFocusSampleRadius = Config.Bind("Depth of Field Auto Focus", "DOFAutoFocusSampleRadius", 0.05f,
+                new ConfigDescription("Sample radius for 9-point mode (percentage of screen width)",
+                    new AcceptableValueRange<float>(0.01f, 0.25f)));
+
+            DOFAutoFocusOffset = Config.Bind("Depth of Field Auto Focus", "DOFAutoFocusOffset", 0f,
+                new ConfigDescription("Offset added to auto-detected focus distance",
+                    new AcceptableValueRange<float>(-10f, 10f)));
+
+            DOFAutoFocusSmoothTime = Config.Bind("Depth of Field Auto Focus", "DOFAutoFocusSmoothTime", 0.15f,
+                new ConfigDescription("Focus transition smoothing time (0 = instant)",
+                    new AcceptableValueRange<float>(0f, 1f)));
+
+            DOFAutoFocusMinDistance = Config.Bind("Depth of Field Auto Focus", "DOFAutoFocusMinDistance", 0.5f,
+                new ConfigDescription("Minimum auto-focus distance",
+                    new AcceptableValueRange<float>(0.1f, 10f)));
+
+            DOFAutoFocusMaxDistance = Config.Bind("Depth of Field Auto Focus", "DOFAutoFocusMaxDistance", 100f,
+                new ConfigDescription("Maximum auto-focus distance",
+                    new AcceptableValueRange<float>(10f, 500f)));
+
+            DOFShowFocusIndicator = Config.Bind("Depth of Field Auto Focus", "DOFShowFocusIndicator", false,
+                "Show focus point indicator on screen (useful for tuning)");
+
 
             if (AssetBundleLoader.LoadBundle())
             {

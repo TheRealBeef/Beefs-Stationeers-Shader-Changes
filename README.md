@@ -25,6 +25,7 @@ Post-processing and visual effects mod adding adjustments for in-game SSAO and B
 ### Depth of Field
 - Not really great for gameplay for most, but great for screenshots
 - Adjustable focal distance, focal size, and aperture
+- Autofocus
 
 ## Requirements
 **WARNING:** This is a BepInEx Plugin Mod. It requires BepInEx to be installed.
@@ -46,6 +47,9 @@ Press **F10** while in-game to open the configuration menu. You can also configu
 - The menu only appears when in-game (not in menus or splash screens)
 
 ## Changelog
+>### Version 2.1.0:
+>- Added autofocus option to DoF effect
+>- Added collapsible menus because too many options
 
 >### Version 2.0.1
 > - Fixed helmet effect could stay on when returning to main menu

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts;
+using UnityEngine;
 
 namespace BeefsShaderChanges
 {
@@ -9,6 +10,12 @@ namespace BeefsShaderChanges
             Low = 0,
             Medium = 1,
             High = 2,
+        }
+
+        public enum AutoFocusMode
+        {
+            SinglePoint = 0,
+            NinePointAverage = 1,
         }
 
         private Shader _dofHdrShader;
@@ -24,8 +31,23 @@ namespace BeefsShaderChanges
         public bool nearBlur = false;
         public float foregroundOverlap = 1.0f;
 
+        public bool autoFocus = false;
+        public AutoFocusMode autoFocusMode = AutoFocusMode.SinglePoint;
+        public float autoFocusSampleRadius = 0.05f; // Percentage of screen size
+        public float autoFocusOffset = 0f;
+        public float autoFocusSmoothTime = 0.15f;
+        public float autoFocusMinDistance = 0.5f;
+        public float autoFocusMaxDistance = 100f;
+
         private float focalDistance01 = 10.0f;
         private float internalBlurWidth = 1.0f;
+        private float _currentFocalLength;
+        private float _targetFocalLength;
+        private float _focusVelocity;
+        private RenderTexture _depthReadbackRT;
+
+        public bool showFocusPoint = false;
+        private float _lastMeasuredDepth = 0f;
 
         public bool InitializeShader()
         {
@@ -45,7 +67,124 @@ namespace BeefsShaderChanges
                 _camera.depthTextureMode |= DepthTextureMode.Depth;
             }
 
+            _currentFocalLength = focalLength;
+            _targetFocalLength = focalLength;
+
             return true;
+        }
+
+        private bool IsWorldReady()
+        {
+            if (!(BeefsShaderChangesPlugin.Instance?.IsInGameWorld() ?? false))
+                return false;
+
+            try
+            {
+                Light worldSun = WorldManager.Instance?.WorldSun?.TargetLight;
+                return worldSun != null;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void Update()
+        {
+            if (!enabled || !autoFocus || _camera == null)
+                return;
+
+            if (!IsWorldReady())
+                return;
+
+            _targetFocalLength = CalculateAutoFocusDistance();
+
+            if (autoFocusSmoothTime > 0.001f)
+            {
+                _currentFocalLength = Mathf.SmoothDamp(
+                    _currentFocalLength,
+                    _targetFocalLength,
+                    ref _focusVelocity,
+                    autoFocusSmoothTime
+                );
+            }
+            else
+            {
+                _currentFocalLength = _targetFocalLength;
+            }
+        }
+
+        private float CalculateAutoFocusDistance()
+        {
+            if (_camera == null)
+                return focalLength;
+
+            float totalDepth = 0f;
+            int sampleCount = 0;
+
+            if (autoFocusMode == AutoFocusMode.SinglePoint)
+            {
+                float depth = SampleDepthAtScreenPosition(0.5f, 0.5f);
+                if (depth > 0)
+                {
+                    totalDepth = depth;
+                    sampleCount = 1;
+                }
+            }
+            else
+            {
+                float radius = autoFocusSampleRadius;
+
+                for (int x = -1; x <= 1; x++)
+                {
+                    for (int y = -1; y <= 1; y++)
+                    {
+                        float screenX = 0.5f + x * radius;
+                        float screenY = 0.5f + y * radius;
+
+                        float depth = SampleDepthAtScreenPosition(screenX, screenY);
+                        if (depth > 0)
+                        {
+                            totalDepth += depth;
+                            sampleCount++;
+                        }
+                    }
+                }
+            }
+
+            if (sampleCount == 0)
+                return _currentFocalLength;
+
+            float averageDepth = totalDepth / sampleCount;
+            _lastMeasuredDepth = averageDepth;
+
+            float finalDistance = averageDepth + autoFocusOffset;
+            finalDistance = Mathf.Clamp(finalDistance, autoFocusMinDistance, autoFocusMaxDistance);
+
+            return finalDistance;
+        }
+
+        private float SampleDepthAtScreenPosition(float screenX, float screenY)
+        {
+            if (_camera == null)
+                return 0f;
+
+            Ray ray = _camera.ViewportPointToRay(new Vector3(screenX, screenY, 0));
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, autoFocusMaxDistance))
+            {
+                return hit.distance;
+            }
+            return autoFocusMaxDistance;
+        }
+
+        private float GetEffectiveFocalLength()
+        {
+            if (autoFocus)
+            {
+                return _currentFocalLength;
+            }
+            return focalLength;
         }
 
         private float FocalDistance01(float worldDist)
@@ -99,12 +238,19 @@ namespace BeefsShaderChanges
                 return;
             }
 
+            if (!IsWorldReady())
+            {
+                Graphics.Blit(source, destination);
+                return;
+            }
+
             if (aperture < 0.0f) aperture = 0.0f;
             if (maxBlurSize < 0.1f) maxBlurSize = 0.1f;
             focalSize = Mathf.Clamp(focalSize, 0.0f, 2.0f);
             internalBlurWidth = Mathf.Max(maxBlurSize, 0.0f);
 
-            focalDistance01 = FocalDistance01(focalLength);
+            float effectiveFocalLength = GetEffectiveFocalLength();
+            focalDistance01 = FocalDistance01(effectiveFocalLength);
             _dofHdrMaterial.SetVector("_CurveParams", new Vector4(1.0f, focalSize, (1.0f / (1.0f - aperture) - 1.0f), focalDistance01));
 
             RenderTexture rtLow = null;
@@ -143,10 +289,67 @@ namespace BeefsShaderChanges
             if (rtLow2) RenderTexture.ReleaseTemporary(rtLow2);
         }
 
+        private void OnGUI()
+        {
+            if (!enabled || !autoFocus || !showFocusPoint)
+                return;
+
+            if (!IsWorldReady())
+                return;
+
+            float centerX = Screen.width / 2f;
+            float centerY = Screen.height / 2f;
+            float crosshairSize = 10f;
+
+            GUI.color = Color.green;
+
+            GUI.DrawTexture(new Rect(centerX - crosshairSize, centerY - 1, crosshairSize * 2, 2), Texture2D.whiteTexture);
+            GUI.DrawTexture(new Rect(centerX - 1, centerY - crosshairSize, 2, crosshairSize * 2), Texture2D.whiteTexture);
+
+            if (autoFocusMode == AutoFocusMode.NinePointAverage)
+            {
+                GUI.color = new Color(1f, 1f, 0f, 0.7f);
+                float radiusPixels = autoFocusSampleRadius * Screen.width;
+
+                for (int x = -1; x <= 1; x++)
+                {
+                    for (int y = -1; y <= 1; y++)
+                    {
+                        if (x == 0 && y == 0) continue;
+
+                        float px = centerX + x * radiusPixels;
+                        float py = centerY - y * radiusPixels;
+
+                        GUI.DrawTexture(new Rect(px - 2, py - 2, 4, 4), Texture2D.whiteTexture);
+                    }
+                }
+            }
+
+            GUI.color = Color.white;
+            GUIStyle style = new GUIStyle(GUI.skin.label);
+            style.fontSize = 14;
+            style.normal.textColor = Color.green;
+
+            string focusInfo = $"Focus: {_currentFocalLength:F1}m (Target: {_targetFocalLength:F1}m)";
+            GUI.Label(new Rect(centerX - 100, centerY + 20, 200, 30), focusInfo, style);
+        }
+
+        public float GetCurrentFocalDistance()
+        {
+            return autoFocus ? _currentFocalLength : focalLength;
+        }
+
+        public float GetTargetFocalDistance()
+        {
+            return autoFocus ? _targetFocalLength : focalLength;
+        }
+
         private void OnDestroy()
         {
             if (_dofHdrMaterial != null)
                 DestroyImmediate(_dofHdrMaterial);
+            if (_depthReadbackRT != null)
+                RenderTexture.ReleaseTemporary(_depthReadbackRT);
         }
     }
 }

@@ -2,7 +2,7 @@
 <ModMetadata xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <Name>Beef's Shader Changes</Name>
     <Author>TheRealBeef</Author>
-    <Version>2.0.1</Version>
+    <Version>2.1.0</Version>
 
     <Description>
         [h1]Beef's Shader Changes[/h1]
@@ -38,6 +38,10 @@
     <WorkshopHandle>3592234706</WorkshopHandle>
 
     <ChangeLog>
+        2.1.0:
+        - Added autofocus option to DoF effect
+        - Added collapsible menus because too many options
+
         2.0.1:
         - Fixed helmet effect could stay on when returning to main menu
 
@@ -52,8 +56,8 @@
     <Tags>
         <Tag>Graphics</Tag>
         <Tag>Post-Processing</Tag>
-        <Tag>Visual Effects</Tag>
         <Tag>BepInEx</Tag>
+        <Tag>StationeersLaunchPad</Tag>
     </Tags>
 
     <InGameDescription>
@@ -83,6 +87,7 @@ Post-processing and visual effects mod adding adjustments for in-game SSAO and B
 <b>Depth of Field</b>
 - Not really great for gameplay for most, but great for screenshots
 - Adjustable focal distance, focal size, and aperture
+- Autofocus option
 
 Configuration available through F10 in-game menu or BepInEx config files.
 
